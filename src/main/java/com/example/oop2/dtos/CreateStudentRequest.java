@@ -1,3 +1,6 @@
+
+//DTO'S ARE NOT DATABASE TABLES DT0'S ARE FOR JSON FILES
+
 package com.example.oop2.dtos;
 
 import lombok.Getter;

@@ -1,3 +1,6 @@
+
+//DATABASE IN JAVA FORM
+
 package com.example.oop2.entities;
 
 import jakarta.persistence.CascadeType;

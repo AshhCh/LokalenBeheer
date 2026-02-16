@@ -1,3 +1,6 @@
+
+// HERE IS BUSINESS LOGIC (WHAT SHOULD HAPPEN, USE REPOSITORIY AND VALIDATE DATA
+
 package com.example.oop2.services;
 
 import com.example.oop2.dtos.CreateStudentRequest;

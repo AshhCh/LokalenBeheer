@@ -1,3 +1,6 @@
+
+//TALK TO THE DATABASE (SAVE, FIND, DELETE)
+
 package com.example.oop2.repositories;
 
 import com.example.oop2.entities.Student;
