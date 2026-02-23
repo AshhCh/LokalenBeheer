@@ -36,5 +36,8 @@ out/
 ### VS Code ###
 .vscode/
 
-###Mac system###
-.DS_Store
+### Mac System ###
+**/.DS_Store
+
+### Logs ###
+*.log
