@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ClassRoomRepository extends JpaRepository<GradeRecord, Long> {
-    List<GradeRecord> findByStudentId(Long studentId);
+public interface ClassRoomRepository extends JpaRepository<ClassRoom, Long> {
+    
 }
+

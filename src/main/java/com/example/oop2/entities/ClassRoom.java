@@ -31,8 +31,10 @@ public class ClassRoom {
 
     private String type;
 
-    private int capacity;
+    private int size;
 
     private boolean isAvailable;
+
+    public ClassRoom(){} //destructor
 
 }

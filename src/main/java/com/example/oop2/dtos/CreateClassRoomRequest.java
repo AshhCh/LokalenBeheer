@@ -8,6 +8,8 @@ import lombok.Setter;
 
 public class CreateClassRoomRequest {
     private Integer classNumber;
-    private String typeClass;
+    private String type;
+    private Integer size;
+    private boolean available;
 
 }
