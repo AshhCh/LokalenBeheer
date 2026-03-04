@@ -32,10 +32,3 @@ public class ClassRoomServiceImpl implements IClassRoomService {
         return ClassRoomRepository.findAll();
     }
 }
-
-/*    @Override
-    public List<ClassRoom> getAll() {
-        return studentRepository.findAll();
-    }
-
-}*/
