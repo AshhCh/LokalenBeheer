@@ -1,6 +1,6 @@
 package com.example.oop2.repositories;
 
-import com.example.oop2.entities.GradeRecord;
+import com.example.oop2.entities.ClassRoom;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

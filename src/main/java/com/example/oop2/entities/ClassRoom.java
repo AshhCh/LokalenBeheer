@@ -17,7 +17,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
+//@NoArgsConstructor
 @AllArgsConstructor
 
 public class ClassRoom {
@@ -27,7 +27,7 @@ public class ClassRoom {
 
     private Long id;
 
-    private String classroomNumber;
+    private String roomNumber;
 
     private String type;
 

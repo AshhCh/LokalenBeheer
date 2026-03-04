@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 
 public class CreateClassRoomRequest {
-    private Integer classNumber;
+    private String roomNumber;
     private String type;
     private Integer size;
     private boolean available;

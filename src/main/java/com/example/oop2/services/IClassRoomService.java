@@ -4,8 +4,8 @@ import com.example.oop2.dtos.CreateClassRoomRequest;
 import com.example.oop2.entities.ClassRoom;
 import java.util.List;
 
-public interface IClassroomService {
+public interface IClassRoomService {
 
-    Classroom create(CreateClassroomRequest request);
+    ClassRoom create(CreateClassRoomRequest request);
     List<ClassRoom> getAll();
 }

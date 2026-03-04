@@ -1,9 +1,9 @@
 package com.example.oop2.services.serviceImpl;
 
-import com.example.oop2.entities.Classroom;
-import com.example.oop2.repositories.ClassroomRepository;
-import com.example.oop2.services.ClassroomService;
-import com.example.oop2.dtos.CreateClassroomRequest;
+import com.example.oop2.entities.ClassRoom;
+import com.example.oop2.repositories.ClassRoomRepository;
+import com.example.oop2.services.IClassRoomService;
+import com.example.oop2.dtos.CreateClassRoomRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,27 +19,23 @@ public class ClassRoomServiceImpl implements IClassRoomService {
 
     @Override
     public ClassRoom create(CreateClassRoomRequest request) {
-        Classroom classroom = new Classroom();
-        classroom.setClassroomNumber(request.getClassroomNumber());
+        ClassRoom classroom = new ClassRoom();
+        classroom.setRoomNumber(request.getRoomNumber());
         classroom.setType(request.getType());
         classroom.setSize(request.getSize());
         classroom.setAvailable(request.isAvailable());
-        return classroomRepository.save(classroom);
-    }
-
-    @Override
-    public GradeRecord getById(Long id) {
-        return gradeRecordRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "GradeRecord not found with id: " + id));
+        return ClassRoomRepository.save(classroom);
     }
 
     @Override
     public List<ClassRoom> getAll() {
-        return ClassRoomRepository.findAll();}
-
-    @Override
-    public List<ClassRoom> getAllClassrooms() {
         return ClassRoomRepository.findAll();
     }
 }
+
+/*    @Override
+    public List<ClassRoom> getAll() {
+        return studentRepository.findAll();
+    }
+
+}*/
