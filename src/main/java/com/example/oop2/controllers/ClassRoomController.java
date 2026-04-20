@@ -17,7 +17,7 @@ public class ClassRoomController {
     public ClassRoomController(IClassRoomService classroomService) {
         this.classroomService = classroomService;
     }
-
+    // GET ALL CLASSROOMS
     @GetMapping
     public List<ClassRoom> getAll() {
         return classroomService.getAll();
@@ -27,4 +27,9 @@ public class ClassRoomController {
     public ClassRoom create(@RequestBody CreateClassRoomRequest request) {
         return classroomService.create(request);
     }
+
+    //GET CLASSROOM BY ID
+
+
+    //DELETE STUDENT BY ID
 }

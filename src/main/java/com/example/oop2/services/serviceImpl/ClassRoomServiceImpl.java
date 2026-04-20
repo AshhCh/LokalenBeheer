@@ -4,7 +4,9 @@ import com.example.oop2.entities.ClassRoom;
 import com.example.oop2.repositories.ClassRoomRepository;
 import com.example.oop2.services.IClassRoomService;
 import com.example.oop2.dtos.CreateClassRoomRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -31,4 +33,22 @@ public class ClassRoomServiceImpl implements IClassRoomService {
     public List<ClassRoom> getAll() {
         return ClassRoomRepository.findAll();
     }
+
+    @Override
+    public ClassRoom getById(Long id){
+        return ClassRoomRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Classroom not found with id: " + id
+                        )
+                );
+    }
+
+    @Override
+    public void delete(Long id){
+        ClassRoom classRoom = getById(id);
+        ClassRoomRepository.delete(classRoom);
+    }
+
 }
