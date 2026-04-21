@@ -8,5 +8,78 @@
 
 <h1>Classroom Availability App</h1>
 
+<h2>Add Classroom</h2>
+<form>
+    <input type="text" id="roomNumber" placeholder="Room Number" /><br/><br/>
+    <input type="text" id="type" placeholder="Type (e.g. Lecture Hall)" /><br/><br/>
+    <input type="number" id="size" placeholder="Size" /><br/><br/>
+    <label>
+        <input type="checkbox" id="available" /> Available
+    </label><br/><br/>
+    <button type="button" onclick="createClassroom()">Add Classroom</button>
+</form>
+
+<h2>Classrooms</h2>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Room Number</th>
+            <th>Type</th>
+            <th>Size</th>
+            <th>Available</th>
+            <th>Actions</th>
+         </tr>
+    </thead>
+    <tbody id="classroomTableBody">
+
+    <!-- Classrooms will be loaded here -->
+
+    </tbody>
+</table>
+
+<script>
+    function createClassroom(){
+        const classroom = {
+            roomNumber: document.getElementById('roomNumber').value,
+            type: document.getElementById('type').value,
+            size: document.getElementById('size').value,
+            available: document.getElementById('available').checked
+        };
+        fetch('http://localhost:8081/api/classrooms', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify(classroom)
+         }).then(() => {
+            loadClassrooms();
+         });
+    }
+
+    function loadClassrooms() {
+        fetch('http://localhost:8081/api/classrooms')
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById('classroomTableBody');
+                tableBody.innerHTML = '';
+                data.forEach(classroom => {
+                    tableBody.innerHTML += `
+                        <tr>
+                            <td>${classroom.id}</td>
+                            <td>${classroom.roomNumber}</td>
+                            <td>${classroom.type}</td>
+                            <td>${classroom.size}</td>
+                            <td>${classroom.available ? 'Yes' : 'No'}</td>
+                            <td><button onclick="deleteClassroom(${classroom.id})">Delete</button></td>
+                        </tr>
+                    `;
+                });
+            });
+    }
+
+    loadClassrooms();
+
+</script>
+
 </body>
 </html>
