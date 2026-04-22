@@ -1,20 +1,21 @@
 package com.example.oop2.services;
 
-import com.example.oop2.repositories.*;
 import com.example.oop2.dtos.CreateReservationRequest;
-import com.example.oop2.entities.*;
-import com.example.oop2.services.ReservationServiceImpl;
+import com.example.oop2.entities.Reservation;
 
 import java.util.List;
 
 public interface IReservationService {
-    GradeRecord createForStudent(Student student, String courseName, Double grade);
 
-    GradeRecord getById(Long id);
+    Reservation create(CreateReservationRequest request);
 
-    List<GradeRecord> getAll();
+    Reservation getById(Long id);
 
-    List<GradeRecord> getByStudentId(Long studentId);
+    List<Reservation> getAll();
 
-    void delete(Long id);
+    List<Reservation> getByStudentId(Long studentId);
+
+    List<Reservation> getByClassRoomId(Long classRoomId);
+
+    void cancel(Long id);
 }

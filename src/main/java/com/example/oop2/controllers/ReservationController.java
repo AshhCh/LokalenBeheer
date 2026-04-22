@@ -1,43 +1,52 @@
 package com.example.oop2.controllers;
 
-import com.example.oop2.entities.GradeRecord;
-import com.example.oop2.services.serviceImpl.GradeRecordServiceImpl;
+import com.example.oop2.dtos.CreateReservationRequest;
+import com.example.oop2.entities.Reservation;
+import com.example.oop2.services.serviceImpl.ReservationService; // same as teacher's style
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/grades")
+@RequestMapping("/v1/reservations")
 public class ReservationController {
 
- /*   private final GradeRecordServiceImpl gradeRecordService; // depends on interface
+    private final ReservationService reservationService;
 
-    public ReservationController(GradeRecordServiceImpl gradeRecordService) {
-        this.gradeRecordService = gradeRecordService;
+    public ReservationController(ReservationService reservationService) {
+        this.reservationService = reservationService;
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Reservation create(@RequestBody CreateReservationRequest request) {
+        return reservationService.create(request);
     }
 
     @GetMapping
-    public List<GradeRecord> getAll() {
-        return gradeRecordService.getAll();
+    public List<Reservation> getAll() {
+        return reservationService.getAll();
     }
 
     @GetMapping("/{id}")
-    public GradeRecord getById(@PathVariable Long id) {
-        return gradeRecordService.getById(id);
+    public Reservation getById(@PathVariable Long id) {
+        return reservationService.getById(id);
     }
 
     @GetMapping("/student/{studentId}")
-    public List<GradeRecord> getByStudent(@PathVariable Long studentId) {
-        return gradeRecordService.getByStudentId(studentId);
+    public List<Reservation> getByStudent(@PathVariable Long studentId) {
+        return reservationService.getByStudentId(studentId);
     }
 
-    @DeleteMapping("/{id}")
+    @GetMapping("/classroom/{classRoomId}")
+    public List<Reservation> getByClassRoom(@PathVariable Long classRoomId) {
+        return reservationService.getByClassRoomId(classRoomId);
+    }
+
+    @PatchMapping("/{id}/cancel")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        gradeRecordService.delete(id);
+    public void cancel(@PathVariable Long id) {
+        reservationService.cancel(id);
     }
-
-    */
 }
-

@@ -1,65 +1,106 @@
 package com.example.oop2.services.serviceImpl;
 
-import com.example.oop2.entities.Reservation;
-import com.example.oop2.entities.Student;
+import com.example.oop2.dtos.CreateReservationRequest;
+import com.example.oop2.entities.*;
+import com.example.oop2.repositories.ClassRoomRepository;
 import com.example.oop2.repositories.ReservationRepository;
+import com.example.oop2.repositories.StudentRepository;
 import com.example.oop2.services.IReservationService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class ReservationServiceImpl implements IReservationService {
+public class ReservationService implements IReservationService {
 
     private final ReservationRepository reservationRepository;
+    private final StudentRepository studentRepository;
+    private final ClassRoomRepository classRoomRepository;
 
-    public ReservationServiceImpl(ReservationRepository reservationRepository) {
+    public ReservationService(ReservationRepository reservationRepository,
+                              StudentRepository studentRepository,
+                              ClassRoomRepository classRoomRepository) {
         this.reservationRepository = reservationRepository;
+        this.studentRepository = studentRepository;
+        this.classRoomRepository = classRoomRepository;
     }
 
     @Override
-    public Reservation createForStudent(Student student, String courseName, Double grade) {
+    public Reservation create(CreateReservationRequest request) {
 
-     /*   if (student == null) {
+        // 1. Validate input
+        if (request.getStudentId() == null) {
             throw new IllegalArgumentException("Student is required");
         }
-
-        if (courseName == null || courseName.trim().isEmpty()) {
-            throw new IllegalArgumentException("Course name is required");
+        if (request.getClassRoomId() == null) {
+            throw new IllegalArgumentException("ClassRoom is required");
+        }
+        if (request.getStartTime() == null || request.getEndTime() == null) {
+            throw new IllegalArgumentException("Start and end time are required");
+        }
+        if (!request.getEndTime().isAfter(request.getStartTime())) {
+            throw new IllegalArgumentException("End time must be after start time");
         }
 
-        if (grade == null || grade < 0 || grade > 10) {
-            throw new IllegalArgumentException("Grade must be between 0 and 10");
-        } */
+        // 2. Check if student exists
+        Student student = studentRepository.findById(request.getStudentId())
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Student not found with id: " + request.getStudentId()));
 
-       /* GradeRecord record = new GradeRecord();
-        record.setCourseName(courseName.trim());
-        record.setGrade(grade);
-        record.setStudent(student); */
+        // 3. Check if classroom exists
+        ClassRoom classRoom = classRoomRepository.findById(request.getClassRoomId())
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "ClassRoom not found with id: " + request.getClassRoomId()));
+
+        // 4. Check for conflicts
+        List<Reservation> conflicts = reservationRepository.findConflicting(
+                request.getClassRoomId(),
+                request.getStartTime(),
+                request.getEndTime()
+        );
+
+        if (!conflicts.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "ClassRoom is already booked for this time slot");
+        }
+
+        // 5. Create and save reservation
+        Reservation reservation = new Reservation();
+        reservation.setStudent(student);
+        reservation.setClassRoom(classRoom);
+        reservation.setStartTime(request.getStartTime());
+        reservation.setEndTime(request.getEndTime());
+        reservation.setStatus(ReservationStatus.ACTIVE);
 
         return reservationRepository.save(reservation);
     }
 
-  /*  @Override
-    public GradeRecord getById(Long id) {
-        return gradeRecordRepository.findById(id)
+    @Override
+    public Reservation getById(Long id) {
+        return reservationRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(
-                        "GradeRecord not found with id: " + id));
+                        "Reservation not found with id: " + id));
     }
 
     @Override
-    public List<GradeRecord> getAll() {
-        return gradeRecordRepository.findAll();
+    public List<Reservation> getAll() {
+        return reservationRepository.findAll();
     }
 
     @Override
-    public List<GradeRecord> getByStudentId(Long studentId) {
-        return gradeRecordRepository.findByStudentId(studentId);
+    public List<Reservation> getByStudentId(Long studentId) {
+        return reservationRepository.findByStudentId(studentId);
     }
 
     @Override
-    public void delete(Long id) {
-        GradeRecord record = getById(id);
-        gradeRecordRepository.delete(record);
-    }    */
+    public List<Reservation> getByClassRoomId(Long classRoomId) {
+        return reservationRepository.findByClassRoomId(classRoomId);
+    }
+
+    @Override
+    public void cancel(Long id) {
+        Reservation reservation = getById(id);
+        reservation.setStatus(ReservationStatus.CANCELLED);
+        reservationRepository.save(reservation); // update status, don't delete!
+    }
 }
