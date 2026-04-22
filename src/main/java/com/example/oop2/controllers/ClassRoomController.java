@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/classrooms")
 public class ClassRoomController {
 
@@ -40,5 +41,6 @@ public class ClassRoomController {
     //DELETE CLASSROOM BY ID
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id){ classroomService.delete(id); }
+    public void delete(@PathVariable Long id)
+    { classroomService.delete(id); }
 }

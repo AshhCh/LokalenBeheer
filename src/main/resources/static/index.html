@@ -56,6 +56,14 @@
          });
     }
 
+    function deleteClassroom(id) {
+        fetch('http://localhost:8081/api/classrooms/' + id, {
+            method: 'DELETE'
+        }).then(()=> {
+            loadClassrooms();
+        });
+    }
+
     function loadClassrooms() {
         fetch('http://localhost:8081/api/classrooms')
             .then(response => response.json())
