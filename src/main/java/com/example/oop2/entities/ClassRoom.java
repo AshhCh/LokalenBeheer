@@ -1,4 +1,5 @@
-//Classroom database in JAVA FORM;
+//Classroom database in JAVA FORM; receives HTTP requests; does not do the logic
+//example the receptionist.
 
 package com.example.oop2.entities;
 

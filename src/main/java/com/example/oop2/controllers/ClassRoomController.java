@@ -16,7 +16,7 @@ public class ClassRoomController {
     // Note: We use the Interface here, not the Implementation!
     private final IClassRoomService classroomService;
 
-    //CONSTRUCTOR INJECTION
+    //DEPENDENCY INJECTION
     public ClassRoomController(IClassRoomService classroomService) {
         this.classroomService = classroomService;
     }

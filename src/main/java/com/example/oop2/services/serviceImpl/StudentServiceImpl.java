@@ -1,5 +1,5 @@
 
-//ACTUAL IMPLEMENTAION
+//ACTUAL IMPLEMENTAIOn (bussiness logic)
 
 package com.example.oop2.services.serviceImpl;
 
