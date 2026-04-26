@@ -1,34 +1,33 @@
-//Classroom database in JAVA FORM; receives HTTP requests; does not do the logic
-//example the receptionist.
-
 package com.example.oop2.entities;
 
 import jakarta.persistence.*;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
-public class ClassRoom {
+public class Reservation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long id;
 
-    private String roomNumber;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
 
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private ReservationStatus status; // ACTIVE, CANCELLED
 
-    private int size;
+    @ManyToOne
+    private Student student;
 
-    private boolean isAvailable;
-
+    @ManyToOne
+    private ClassRoom classRoom;
 }
