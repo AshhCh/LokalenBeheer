@@ -11,15 +11,15 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ReservationService implements IReservationService {
+public class ReservationServiceImpl implements IReservationService {
 
     private final ReservationRepository reservationRepository;
     private final StudentRepository studentRepository;
     private final ClassRoomRepository classRoomRepository;
 
-    public ReservationService(ReservationRepository reservationRepository,
-                              StudentRepository studentRepository,
-                              ClassRoomRepository classRoomRepository) {
+    public ReservationServiceImpl(ReservationRepository reservationRepository,
+                                  StudentRepository studentRepository,
+                                  ClassRoomRepository classRoomRepository) {
         this.reservationRepository = reservationRepository;
         this.studentRepository = studentRepository;
         this.classRoomRepository = classRoomRepository;
@@ -28,7 +28,6 @@ public class ReservationService implements IReservationService {
     @Override
     public Reservation create(CreateReservationRequest request) {
 
-        // 1. Validate input
         if (request.getStudentId() == null) {
             throw new IllegalArgumentException("Student is required");
         }
@@ -42,17 +41,14 @@ public class ReservationService implements IReservationService {
             throw new IllegalArgumentException("End time must be after start time");
         }
 
-        // 2. Check if student exists
         Student student = studentRepository.findById(request.getStudentId())
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Student not found with id: " + request.getStudentId()));
 
-        // 3. Check if classroom exists
         ClassRoom classRoom = classRoomRepository.findById(request.getClassRoomId())
                 .orElseThrow(() -> new IllegalArgumentException(
                         "ClassRoom not found with id: " + request.getClassRoomId()));
 
-        // 4. Check for conflicts
         List<Reservation> conflicts = reservationRepository.findConflicting(
                 request.getClassRoomId(),
                 request.getStartTime(),
@@ -64,7 +60,6 @@ public class ReservationService implements IReservationService {
                     "ClassRoom is already booked for this time slot");
         }
 
-        // 5. Create and save reservation
         Reservation reservation = new Reservation();
         reservation.setStudent(student);
         reservation.setClassRoom(classRoom);
@@ -101,6 +96,6 @@ public class ReservationService implements IReservationService {
     public void cancel(Long id) {
         Reservation reservation = getById(id);
         reservation.setStatus(ReservationStatus.CANCELLED);
-        reservationRepository.save(reservation); // update status, don't delete!
+        reservationRepository.save(reservation);
     }
 }

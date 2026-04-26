@@ -2,7 +2,7 @@ package com.example.oop2.controllers;
 
 import com.example.oop2.dtos.CreateReservationRequest;
 import com.example.oop2.entities.Reservation;
-import com.example.oop2.services.serviceImpl.ReservationService; // same as teacher's style
+import com.example.oop2.services.serviceImpl.ReservationServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,9 +12,9 @@ import java.util.List;
 @RequestMapping("/v1/reservations")
 public class ReservationController {
 
-    private final ReservationService reservationService;
+    private final ReservationServiceImpl reservationService;
 
-    public ReservationController(ReservationService reservationService) {
+    public ReservationController(ReservationServiceImpl reservationService) {
         this.reservationService = reservationService;
     }
 
