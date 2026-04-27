@@ -149,6 +149,41 @@
     </tbody>
 </table>
 
+    <!-- Reservation form -->
+
+<h2>Make a Reservation</h2>
+
+<form>
+    <input type="number" id="studentId" placeholder="Student ID" /><br/><br/>
+    <input type="number" id="classRoomId" placeholder="Classroom ID" /><br/><br/>
+    <label>Start Time</label><br/>
+    <input type="datetime-local" id="startTime" /><br/><br/>
+    <label>End Time</label><br/>
+    <input type="datetime-local" id="endTime" /><br/><br/>
+    <button type="button" onclick="createReservation()">Book Classroom</button>
+</form>
+
+
+    <!-- Reservation Table -->
+
+<h2>Reservations</h2>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Student</th>
+        <th>Classroom</th>
+        <th>Start Time</th>
+        <th>End Time</th>
+        <th>Status</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody id="reservationTableBody">
+    </tbody>
+</table>
+
+
 <script>
     function createClassroom(){
         const classroom = {
@@ -195,7 +230,63 @@
             });
     }
 
+
+    function createReservation() {
+        const reservation = {
+            studentId: Number(document.getElementById('studentId').value),
+            classRoomId: Number(document.getElementById('classRoomId').value),
+            startTime: document.getElementById('startTime').value,
+            endTime: document.getElementById('endTime').value
+        };
+
+       /* console.log('Sending reservation:', JSON.stringify(reservation)); */
+
+        fetch('http://localhost:8081/v1/reservations', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(reservation)
+        }).then(response => {
+            if (response.ok) {
+                alert('Reservation made successfully!');
+            } else {
+                alert('Failed to make reservation - classroom may already be booked!');
+            }
+        });
+    }
+
+    function loadReservations(){
+        fetch('http://localhost:8081/v1/reservations')
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById('reservationTableBody');
+                tableBody.innerHTML = '';
+                data.forEach(reservation => {
+                    tableBody.innerHTML += `
+                     <tr>
+                        <td>${reservation.id}</td>
+                        <td>${reservation.student.firstName} ${reservation.student.lastName}</td>
+                        <td>${reservation.classRoom.roomNumber}</td>
+                        <td>${reservation.startTime}</td>
+                        <td>${reservation.endTime}</td>
+                        <td>${reservation.status}</td>
+                        <td><button class="delete-btn" onclick="cancelReservation(${reservation.id})">Cancel</button></td>
+                     </tr>
+                  `;
+                });
+            });
+    }
+
+    function cancelReservation(id){
+        fetch('http://localhost:8081/v1/reservations/' + id + '/canclel', {
+            method: 'PATCH'
+        }).then(() => {
+            loadReservations();
+        });
+    }
+
     loadClassrooms();
+    loadReservations();
+
 
 </script>
 
