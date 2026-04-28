@@ -111,6 +111,57 @@
         font-size: 12px;
     }
 
+    /* -------------- Booking Log styling -------------- */
+    .log-container {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+
+    .log-entry {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .log-entry:last-child {
+        border-bottom: none;
+    }
+
+    .log-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-top: 4px;
+        flex-shrink: 0;
+    }
+
+    .log-dot-book   { background-color: #27ae60; }
+    .log-dot-cancel { background-color: #e74c3c; }
+
+    .log-text {
+        font-size: 14px;
+        color: #34495e;
+        line-height: 1.5;
+    }
+
+    .log-time {
+        font-size: 11px;
+        color: #999;
+        margin-top: 2px;
+    }
+
+    .log-empty {
+        color: #999;
+        font-size: 14px;
+        text-align: center;
+        padding: 10px 0;
+    }
+
     </style>
 
 </head>
@@ -133,26 +184,24 @@
 
 <table>
     <thead>
-        <tr>
-            <th>ID</th>
-            <th>Room Number</th>
-            <th>Type</th>
-            <th>Size</th>
-            <th>Available</th>
-            <th>Actions</th>
-         </tr>
+    <tr>
+        <th>ID</th>
+        <th>Room Number</th>
+        <th>Type</th>
+        <th>Size</th>
+        <th>Available</th>
+        <th>Actions</th>
+    </tr>
     </thead>
     <tbody id="classroomTableBody">
-
     <!-- Classrooms will be loaded here -->
-
     </tbody>
 </table>
 
-    <!-- Reservation form -->
+<br/>
 
+<!-- Reservation form -->
 <h2>Make a Reservation</h2>
-
 <form>
     <input type="number" id="studentId" placeholder="Student ID" /><br/><br/>
     <input type="number" id="classRoomId" placeholder="Classroom ID" /><br/><br/>
@@ -163,9 +212,7 @@
     <button type="button" onclick="createReservation()">Book Classroom</button>
 </form>
 
-
-    <!-- Reservation Table -->
-
+<!-- Reservation Table -->
 <h2>Reservations</h2>
 <table>
     <thead>
@@ -183,8 +230,55 @@
     </tbody>
 </table>
 
+<br/>
+
+<!-- Booking Log — NIEUW -->
+<h2>Booking Log</h2>
+<div class="log-container">
+    <div id="bookingLog">
+        <div class="log-empty">No activity yet — bookings and cancellations will appear here.</div>
+    </div>
+</div>
+
 
 <script>
+
+    // ── Log system — NIEUW ────────────────────────────────────────
+    const logs = [];
+
+    function addLog(type, message) {
+        logs.unshift({ type, message, time: new Date() });
+        renderLog();
+    }
+
+    function renderLog() {
+        const container = document.getElementById('bookingLog');
+        if (logs.length === 0) {
+            container.innerHTML = '<div class="log-empty">No activity yet — bookings and cancellations will appear here.</div>';
+            return;
+        }
+        container.innerHTML = logs.map(log => `
+            <div class="log-entry">
+                <div class="log-dot ${log.type === 'book' ? 'log-dot-book' : 'log-dot-cancel'}"></div>
+                <div>
+                    <div class="log-text">${log.message}</div>
+                    <div class="log-time">${formatDateTime(log.time)}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // ── Datetime formatter — NIEUW ────────────────────────────────
+    function formatDateTime(dt) {
+        if (!dt) return '—';
+        const d = new Date(dt);
+        return d.toLocaleString('en-GB', {
+            day: '2-digit', month: 'short', year: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        });
+    }
+
+    // ── Classrooms — ongewijzigd ───────────────────────────────────
     function createClassroom(){
         const classroom = {
             roomNumber: document.getElementById('roomNumber').value,
@@ -230,30 +324,48 @@
             });
     }
 
+    // ── Reservations — kleine aanpassingen voor log + formatDateTime
+    function createReservation() {
+        const studentId   = Number(document.getElementById('studentId').value);
+        const classRoomId = Number(document.getElementById('classRoomId').value);
+        const startRaw    = document.getElementById('startTime').value;
+        const endRaw      = document.getElementById('endTime').value;
 
-function createReservation() {
-    const reservation = {
-        studentId: Number(document.getElementById('studentId').value),
-        classRoomId: Number(document.getElementById('classRoomId').value),
-        startTime: document.getElementById('startTime').value + ':00',
-        endTime: document.getElementById('endTime').value + ':00'
-    };
+        const reservation = {
+            studentId:   studentId,
+            classRoomId: classRoomId,
+            startTime:   startRaw + ':00',
+            endTime:     endRaw   + ':00'
+        };
 
-    fetch('http://localhost:8081/v1/reservations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(reservation)
-    }).then(response => {
-        console.log('Status:', response.status);
-        if (response.status === 201) {
-            alert('Reservation made successfully!');
-            loadReservations();
-            loadClassrooms();
-        } else {
-            alert('Failed to make reservation - classroom may already be booked!');
-        }
-    });
-}
+        fetch('http://localhost:8081/v1/reservations', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(reservation)
+        }).then(async response => {
+            console.log('Status:', response.status);
+            if (response.status === 201) {
+                const data = await response.json();
+                const studentName = data.student
+                    ? `${data.student.firstName} ${data.student.lastName}`
+                    : `Student #${studentId}`;
+                const roomName = data.classRoom?.roomNumber ?? `Room #${classRoomId}`;
+
+                alert('Reservation made successfully!');
+
+                // Log toevoegen — NIEUW
+                addLog('book',
+                    `<strong>${studentName}</strong> booked <strong>${roomName}</strong> ` +
+                    `from <strong>${formatDateTime(startRaw)}</strong> to <strong>${formatDateTime(endRaw)}</strong>`
+                );
+
+                loadReservations();
+                loadClassrooms();
+            } else {
+                alert('Failed to make reservation - classroom may already be booked!');
+            }
+        });
+    }
 
     function loadReservations(){
         fetch('http://localhost:8081/v1/reservations')
@@ -267,27 +379,30 @@ function createReservation() {
                         <td>${reservation.id}</td>
                         <td>${reservation.student.firstName} ${reservation.student.lastName}</td>
                         <td>${reservation.classRoom.roomNumber}</td>
-                        <td>${reservation.startTime}</td>
-                        <td>${reservation.endTime}</td>
+                        <td>${formatDateTime(reservation.startTime)}</td>
+                        <td>${formatDateTime(reservation.endTime)}</td>
                         <td>${reservation.status}</td>
-                        <td><button class="delete-btn" onclick="cancelReservation(${reservation.id})">Cancel</button></td>
+                        <td><button class="delete-btn" onclick="cancelReservation(${reservation.id}, '${reservation.student.firstName} ${reservation.student.lastName}', '${reservation.classRoom.roomNumber}')">Cancel</button></td>
                      </tr>
                   `;
                 });
             });
     }
 
-    function cancelReservation(id){
+    function cancelReservation(id, studentName, roomName){
         fetch('http://localhost:8081/v1/reservations/' + id + '/cancel', {
             method: 'PATCH'
         }).then(() => {
+            // Log toevoegen — NIEUW
+            addLog('cancel',
+                `<strong>${studentName}</strong>'s reservation for <strong>${roomName}</strong> was cancelled`
+            );
             loadReservations();
         });
     }
 
     loadClassrooms();
     loadReservations();
-
 
 </script>
 
