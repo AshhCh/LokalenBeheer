@@ -49,6 +49,10 @@ public class ReservationServiceImpl implements IReservationService {
                 .orElseThrow(() -> new IllegalArgumentException(
                         "ClassRoom not found with id: " + request.getClassRoomId()));
 
+        if (!classRoom.isAvailable()) {
+            throw new IllegalArgumentException("ClassRoom is not available");
+        }
+
         List<Reservation> conflicts = reservationRepository.findConflicting(
                 request.getClassRoomId(),
                 request.getStartTime(),
@@ -66,6 +70,9 @@ public class ReservationServiceImpl implements IReservationService {
         reservation.setStartTime(request.getStartTime());
         reservation.setEndTime(request.getEndTime());
         reservation.setStatus(ReservationStatus.ACTIVE);
+
+        classRoom.setAvailable(false);
+        classRoomRepository.save(classRoom);
 
         return reservationRepository.save(reservation);
     }
@@ -97,5 +104,8 @@ public class ReservationServiceImpl implements IReservationService {
         Reservation reservation = getById(id);
         reservation.setStatus(ReservationStatus.CANCELLED);
         reservationRepository.save(reservation);
+
+        reservation.getClassRoom().setAvailable(true);
+        classRoomRepository.save(reservation.getClassRoom());
     }
 }
