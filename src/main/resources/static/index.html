@@ -162,12 +162,42 @@
         padding: 10px 0;
     }
 
+    /* -------------- Timeslot styling -------------- */
+        .slot-available {
+        background-color: #27ae60;
+        color: white;
+        text-align: center;
+        cursor: pointer;
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    .slot-available:hover {
+        background-color: #219a52;
+    }
+
+    .slot-booked {
+        background-color: #e74c3c;
+        color: white;
+        text-align: center;
+        padding: 8px;
+        font-size: 12px;
+    }
+
+
     </style>
 
 </head>
 <body>
 
 <h1>Classroom Availability App</h1>
+
+<h2>Classroom Timetable</h2>
+<div>
+    <label>Select Date: </label>
+    <input type="date" id="timetableDate" onchange="loadTimetable()" />
+</div>
+<div id="timetableContainer" style="overflow-x: auto; margin-top: 15px;"></div>
 
 <h2>Add Classroom</h2>
 <form>
@@ -243,7 +273,7 @@
 
 <script>
 
-    // ── Log system — NIEUW ────────────────────────────────────────
+    // ── Log system —
     const logs = [];
 
     function addLog(type, message) {
@@ -268,7 +298,7 @@
         `).join('');
     }
 
-    // ── Datetime formatter — NIEUW ────────────────────────────────
+    // ── Datetime formatter —
     function formatDateTime(dt) {
         if (!dt) return '—';
         const d = new Date(dt);
@@ -278,7 +308,7 @@
         });
     }
 
-    // ── Classrooms — ongewijzigd ───────────────────────────────────
+    // ── Classrooms —
     function createClassroom(){
         const classroom = {
             roomNumber: document.getElementById('roomNumber').value,
@@ -324,7 +354,7 @@
             });
     }
 
-    // ── Reservations — kleine aanpassingen voor log + formatDateTime
+    // ── Reservations —
     function createReservation() {
         const studentId   = Number(document.getElementById('studentId').value);
         const classRoomId = Number(document.getElementById('classRoomId').value);
@@ -400,6 +430,92 @@
             loadReservations();
         });
     }
+
+    function loadTimetable() {
+    const date = document.getElementById('timetableDate').value;
+    if (!date) return;
+
+    //fetch classrooms and reservations at the same time
+    Promise.all([
+        fetch('http://localhost:8081/api/classrooms').then(r => r.json()),
+        fetch('http://localhost:8081/v1/reservations').then(r => r.json())
+    ]).then(([classrooms, reservations]) => {
+
+        //Filter reservations for the selected date only
+        const dayReservations = reservations.filter(r =>
+            r.startTime.startsWith(date)
+        );
+
+        //Time slots from 7am to 10pm
+        const hours = [];
+        for (let h = 7; h <= 22; h++) {
+            hours.push(h);
+        }
+
+        //Build table
+        let html = '<table>';
+
+        //Header row with time slots
+        html += '<thead><tr><th>Classroom</th>';
+        hours.forEach(h => {
+            html += `<th>${h}:00</th>`;
+        });
+        html += '</tr></thead>';
+
+        //One row per classroom
+        html += '<tbody>';
+        classrooms.forEach(classroom => {
+            html += `<tr><td><strong>${classroom.roomNumber}</strong><br/>${classroom.type}</td>`;
+
+        hours.forEach(h => {
+            //check if this time slot is reserved
+            const isBooked = dayReservations.some(r => {
+                const start = new Date(r.startTime).getHours();
+                const end = new Date(r.endTime).getHours();
+                return r.classRoom.id === classroom.id && h >= start && h < end;
+           });
+
+           if (isBooked) {
+               html += `<td class="slot-booked">Booked</td>`;
+           } else {
+               html += `<td class="slot-available" onclick="bookSlot(${classroom.id}, '${date}', ${h})">Free</td>`;
+          }
+      });
+
+         html += `</tr>`;
+
+    });
+
+    html += '</tbody></table>';
+    document.getElementById('timetableContainer').innerHTML = html;
+  });
+}
+
+function bookSlot(classroomId, date, hour) {
+    const studentId = prompt('Enter your student ID: ');
+    if (!studentId) return;
+
+    const reservation = {
+        studentId: Number(studentId),
+        classRoomId: classroomId,
+        startTime: `${date}T${String(hour).padStart(2, '0')}:00:00`,
+        endTime: `${date}T${String(hour + 1).padStart(2, '0')}:00:00`
+    };
+
+    fetch('http://localhost:8081/v1/reservations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reservation)
+    }).then(response => {
+        if (response.status === 201) {
+            alert('Booking confirmed!');
+            loadTimetable();
+            loadReservations();
+        } else {
+            alert('Failed to book - slot may already be taken!');
+        }
+    });
+}
 
     loadClassrooms();
     loadReservations();
