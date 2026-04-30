@@ -13,8 +13,8 @@ import java.util.List;
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
+    // Later toevoegen zonder iets te breken:
     List<Reservation> findByStudentId(Long studentId);
-
     List<Reservation> findByClassRoomId(Long classRoomId);
 
     // Conflictcheck: is this classroom already booked in this timeslot?
