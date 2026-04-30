@@ -1,3 +1,4 @@
+/*
 package com.example.oop2.services.serviceImpl;
 
 import com.example.oop2.entities.GradeRecord;
@@ -63,3 +64,4 @@ public class GradeRecordServiceImpl implements IGradeRecordService {
         gradeRecordRepository.delete(record);
     }
 }
+*/

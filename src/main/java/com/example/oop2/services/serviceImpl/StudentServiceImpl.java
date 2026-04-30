@@ -4,10 +4,8 @@
 package com.example.oop2.services.serviceImpl;
 
 import com.example.oop2.dtos.CreateStudentRequest;
-import com.example.oop2.entities.GradeRecord;
 import com.example.oop2.entities.Student;
 import com.example.oop2.repositories.StudentRepository;
-import com.example.oop2.services.IGradeRecordService;
 import com.example.oop2.services.IStudentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,12 +17,9 @@ import java.util.List;
 public class StudentServiceImpl implements IStudentService {
 
     private final StudentRepository studentRepository;
-    private final IGradeRecordService gradeRecordService;
 
-    public StudentServiceImpl(StudentRepository studentRepository,
-                              IGradeRecordService gradeRecordService) {
+    public StudentServiceImpl(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
-        this.gradeRecordService = gradeRecordService;
     }
 
     @Override
@@ -59,13 +54,13 @@ public class StudentServiceImpl implements IStudentService {
         studentRepository.delete(student);
     }
 
-    /**
+/*    *//**
      * StudentService coordinates the use case, but GradeRecordService owns
      * grade validation and persistence.
-     */
+     *//*
     @Override
     public GradeRecord addGrade(Long studentId, String courseName, Double grade) {
         Student student = getById(studentId);
         return gradeRecordService.createForStudent(student, courseName, grade);
-    }
+    }*/
 }

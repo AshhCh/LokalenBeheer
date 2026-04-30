@@ -1,3 +1,4 @@
+/*
 package com.example.oop2.services;
 
 import com.example.oop2.entities.GradeRecord;
@@ -16,3 +17,4 @@ public interface IGradeRecordService {
 
     void delete(Long id);
 }
+*/

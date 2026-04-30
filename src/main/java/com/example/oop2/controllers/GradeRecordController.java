@@ -1,3 +1,4 @@
+/*
 package com.example.oop2.controllers;
 
 import com.example.oop2.entities.GradeRecord;
@@ -38,4 +39,5 @@ public class GradeRecordController {
         gradeRecordService.delete(id);
     }
 }
+*/
 

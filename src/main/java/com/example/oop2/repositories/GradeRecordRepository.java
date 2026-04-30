@@ -1,3 +1,4 @@
+/*
 package com.example.oop2.repositories;
 
 import com.example.oop2.entities.GradeRecord;
@@ -10,3 +11,4 @@ import java.util.List;
 public interface GradeRecordRepository extends JpaRepository<GradeRecord, Long> {
     List<GradeRecord> findByStudentId(Long studentId);
 }
+*/

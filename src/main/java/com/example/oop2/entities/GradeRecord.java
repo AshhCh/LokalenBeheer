@@ -1,3 +1,4 @@
+/*
 package com.example.oop2.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -31,3 +32,4 @@ public class GradeRecord {
     @JsonIgnore
     private Student student;
 }
+*/

@@ -1,8 +1,6 @@
 package com.example.oop2.controllers;
 
-import com.example.oop2.dtos.CreateGradeRequest;
 import com.example.oop2.dtos.CreateStudentRequest;
-import com.example.oop2.entities.GradeRecord;
 import com.example.oop2.entities.Student;
 import com.example.oop2.services.serviceImpl.StudentServiceImpl;
 import org.springframework.http.HttpStatus;
@@ -17,8 +15,7 @@ public class StudentController {
     private final StudentServiceImpl studentService; // THIS IS THE INTERFACE depends on interface
 
     //CONSTRUCTOR INJECTION : CREATES STUDENSERVICEIMPL AND IMPL IT HERE (“Hey Spring, give me the StudentService when this controller starts.”)
-    public StudentController(StudentServiceImpl studentService)
-    {
+    public StudentController(StudentServiceImpl studentService) {
         this.studentService = studentService;
     }
 
@@ -48,12 +45,14 @@ public class StudentController {
     public void delete(@PathVariable Long id) {
         studentService.delete(id);
     }
-
+}
     //ADD GRADE TO A STUDENT
+/*
     @PostMapping("/{id}/grades")
     @ResponseStatus(HttpStatus.CREATED)
     public GradeRecord addGrade(@PathVariable Long id, @RequestBody CreateGradeRequest request) {
         return studentService.addGrade(id, request.getCourseName(), request.getGrade());
     }
 }
+*/
 
