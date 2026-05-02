@@ -23,6 +23,15 @@ public class ClassRoomServiceImpl implements IClassRoomService {
 
     @Override
     public ClassRoom create(CreateClassRoomRequest request) {
+
+        if (request.getRoomNumber() == null || request.getRoomNumber().isBlank()) {
+            throw new IllegalArgumentException("Room number is required");
+        }
+
+        if (request.getSize() <= 0 ){
+            throw new IllegalArgumentException("Room size must be greater than zero");
+        }
+
         ClassRoom classroom = new ClassRoom();
         classroom.setRoomNumber(request.getRoomNumber());
         classroom.setType(request.getType());
