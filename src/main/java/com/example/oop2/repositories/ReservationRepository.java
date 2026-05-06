@@ -1,5 +1,6 @@
 package com.example.oop2.repositories;
 
+import com.example.oop2.entities.ClassRoom;
 import com.example.oop2.entities.Reservation;
 import com.example.oop2.entities.ReservationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,4 +28,13 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             @Param("startTime") LocalDateTime startTime,
             @Param("endTime") LocalDateTime endTime
     );
+
+    @Query("SELECT r.classRoom.id FROM Reservation r WHERE r.status = 'ACTIVE' " +
+            "AND r.startTime < :endTime " +
+            "AND r.endTime > :startTime")
+    List<Long> findBookedClassRoomIds(
+            @Param("startTime") LocalDateTime startTime,
+            @Param("endTime") LocalDateTime endTime
+    );
+
 }

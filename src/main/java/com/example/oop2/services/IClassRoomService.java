@@ -3,6 +3,7 @@ package com.example.oop2.services;
 import com.example.oop2.dtos.CreateClassRoomRequest;
 import com.example.oop2.entities.ClassRoom;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface IClassRoomService {
@@ -11,4 +12,6 @@ public interface IClassRoomService {
     List<ClassRoom> getAll();
     ClassRoom getById(Long id);
     void delete(Long id);
+
+    List<ClassRoom> getAvailable(LocalDateTime startTime, LocalDateTime endTime);
 }

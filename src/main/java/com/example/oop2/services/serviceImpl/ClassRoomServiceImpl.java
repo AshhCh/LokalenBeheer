@@ -9,16 +9,21 @@ import com.example.oop2.dtos.CreateClassRoomRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import com.example.oop2.repositories.ReservationRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class ClassRoomServiceImpl implements IClassRoomService {
 
     private final ClassRoomRepository ClassRoomRepository;
+    private final ReservationRepository reservationRepository;
 
-    public ClassRoomServiceImpl(ClassRoomRepository ClassRoomRepository) {
+    public ClassRoomServiceImpl(ClassRoomRepository ClassRoomRepository,
+                                ReservationRepository reservationRepository) {
         this.ClassRoomRepository = ClassRoomRepository;
+        this.reservationRepository = reservationRepository;
     }
 
     @Override
@@ -62,4 +67,9 @@ public class ClassRoomServiceImpl implements IClassRoomService {
         ClassRoomRepository.delete(classRoom);
     }
 
+    @Override
+    public List<ClassRoom> getAvailable(LocalDateTime startTime, LocalDateTime endTime) {
+        List<Long> bookedIds = reservationRepository.findBookedClassRoomIds(startTime, endTime);
+        return ClassRoomRepository.findAvailableClassRooms(bookedIds);
+    }
 }

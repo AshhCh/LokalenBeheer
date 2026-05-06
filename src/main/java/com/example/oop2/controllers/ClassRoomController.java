@@ -6,6 +6,7 @@ import com.example.oop2.services.IClassRoomService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -13,7 +14,7 @@ import java.util.List;
 @RequestMapping("/api/classrooms")
 public class ClassRoomController {
 
-    // Note: We use the Interface here, not the Implementation!
+    // Note: We use the Interface here, not the Implementation
     private final IClassRoomService classroomService;
 
     //DEPENDENCY INJECTION
@@ -43,4 +44,12 @@ public class ClassRoomController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id)
     { classroomService.delete(id); }
+
+    @GetMapping("/available")
+    public List<ClassRoom> getAvailable(
+            @RequestParam LocalDateTime start,
+            @RequestParam LocalDateTime end) {
+        return classroomService.getAvailable(start, end);
+    }
+
 }
