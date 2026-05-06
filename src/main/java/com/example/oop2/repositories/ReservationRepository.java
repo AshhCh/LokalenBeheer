@@ -29,6 +29,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             @Param("endTime") LocalDateTime endTime
     );
 
+    // returns Ids of all classrooms that have an active reservation in the given time slot (used by the getAvailable endpoint to find free classrooms)
     @Query("SELECT r.classRoom.id FROM Reservation r WHERE r.status = 'ACTIVE' " +
             "AND r.startTime < :endTime " +
             "AND r.endTime > :startTime")

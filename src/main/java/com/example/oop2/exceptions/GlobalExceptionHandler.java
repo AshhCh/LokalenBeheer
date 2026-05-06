@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.util.HashMap;
 import java.util.Map;
 
-@ControllerAdvice //class handles exceptions from all of the controllers
+//Returns a clean 400 response instead of Spring's default 500 error
+//class handles exceptions from all of the controllers
+@ControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)

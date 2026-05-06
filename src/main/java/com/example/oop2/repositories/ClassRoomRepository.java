@@ -13,7 +13,7 @@ import java.util.List;
 @Repository
 public interface ClassRoomRepository extends JpaRepository<ClassRoom, Long> {
 
-
+// Returns all classrooms that are not booked in the time slot given (Id's that are not in findBookedClassRoomIds list)
     @Query("SELECT c FROM ClassRoom c WHERE c.id NOT IN :bookedIds")
     List<ClassRoom> findAvailableClassRooms(@Param("bookedIds") List<Long> bookedIds);
 

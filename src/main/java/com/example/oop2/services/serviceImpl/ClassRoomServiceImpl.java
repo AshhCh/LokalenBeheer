@@ -26,6 +26,7 @@ public class ClassRoomServiceImpl implements IClassRoomService {
         this.reservationRepository = reservationRepository;
     }
 
+// Validate input before saving
     @Override
     public ClassRoom create(CreateClassRoomRequest request) {
 
